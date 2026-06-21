@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=Cairo:wght@400;500;600;700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+    html, body { margin:0; padding:0; }
+    ::selection { background:#F4D35E; color:#1B3A2B; }
+    .thwb-x::-webkit-scrollbar { height:7px; }
+    .thwb-x::-webkit-scrollbar-thumb { background:rgba(45,106,79,.22); border-radius:99px; }
+    @keyframes thwb-rise { 0%{transform:translateY(16px);opacity:0} 100%{transform:translateY(0);opacity:1} }
+    @keyframes thwb-pop { 0%{transform:scale(.7);opacity:0} 60%{transform:scale(1.06)} 100%{transform:scale(1);opacity:1} }
+  </style>
+</helmet>
+
+<div dir="{{ dir }}" lang="{{ langAttr }}" style="min-height:100vh; background:#FFF8F0; font-family:'Cairo',sans-serif; color:#1B3A2B; overflow-x:hidden;">
+
+  <!-- ============ HEADER (persistent) ============ -->
+  <header style="position:sticky; top:0; z-index:50; background:#2D6A4F; color:#FFF8F0;">
+    <div style="max-width:1180px; margin:0 auto; padding:0 28px; height:74px; display:flex; align-items:center; gap:24px;">
+      <button onClick="{{ goHome }}" style="display:flex; align-items:center; gap:9px; background:none; border:none; cursor:pointer; color:#FFF8F0; padding:0;">
+        <svg viewBox="0 0 24 24" width="26" height="26" fill="#E9A23B"><path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.06 .66 1.04-3.34A6.96 6.96 0 0 0 9 19c4 0 8-4 8-11z"></path></svg>
+        <span style="font-family:'El Messiri',sans-serif; font-weight:700; font-size:28px; letter-spacing:.01em;">{{ brandName }}</span>
+      </button>
+      <nav style="display:flex; gap:26px; margin-inline-start:18px;">
+        <sc-for list="{{ navLinks }}" as="n" hint-placeholder-count="4">
+          <button onClick="{{ n.go }}" style="background:none; border:none; cursor:pointer; color:rgba(255,248,240,.86); font-family:'Cairo',sans-serif; font-weight:600; font-size:15px; padding:6px 0;" style-hover="color:#F4D35E;">{{ n.label }}</button>
+        </sc-for>
+      </nav>
+      <div style="flex:1;"></div>
+      <button onClick="{{ goCart }}" aria-label="cart" style="position:relative; width:44px; height:44px; border-radius:50%; border:1.5px solid rgba(255,248,240,.30); background:rgba(255,248,240,.08); color:#FFF8F0; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+        <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="#FFF8F0" stroke-width="1.9"><path d="M6 7h13l-1.2 8.5a2 2 0 0 1-2 1.7H9.2a2 2 0 0 1-2-1.7L6 4H3"></path><circle cx="9.5" cy="20" r="1.2" fill="#FFF8F0"></circle><circle cx="16" cy="20" r="1.2" fill="#FFF8F0"></circle></svg>
+        <sc-if value="{{ hasCart }}" hint-placeholder-val="{{ false }}">
+          <span style="position:absolute; top:-4px; inset-inline-end:-4px; min-width:20px; height:20px; padding:0 5px; border-radius:99px; background:#E9A23B; color:#1B3A2B; font-family:'Tajawal',sans-serif; font-weight:800; font-size:12px; display:flex; align-items:center; justify-content:center; direction:ltr;">{{ cartCount }}</span>
+        </sc-if>
+      </button>
+      <button onClick="{{ toggleLang }}" style="height:40px; padding:0 16px; border:1.5px solid rgba(255,248,240,.40); background:rgba(255,248,240,.10); color:#FFF8F0; border-radius:999px; font-family:'Tajawal',sans-serif; font-weight:700; font-size:14px; cursor:pointer;">{{ langToggleLabel }}</button>
+      <button onClick="{{ donateTop }}" style="height:44px; padding:0 22px; border:none; background:#E9A23B; color:#FFF8F0; border-radius:999px; font-family:'Cairo',sans-serif; font-weight:700; font-size:15px; cursor:pointer; box-shadow:0 6px 16px rgba(233,162,59,.40);">{{ ctaDonate }}</button>
+    </div>
+  </header>
+
+  <!-- ============ HOME ============ -->
+  <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+  <main data-screen-label="Home">
+    <!-- hero -->
+    <section style="background:#2D6A4F; color:#FFF8F0; position:relative; overflow:hidden;">
+      <div style="position:absolute; inset-block-start:-120px; inset-inline-end:-80px; width:420px; height:420px; border-radius:50%; background:radial-gradient(circle, rgba(244,211,94,.30), transparent 65%);"></div>
+      <div style="max-width:1180px; margin:0 auto; padding:64px 28px 76px; display:grid; grid-template-columns:1.05fr .95fr; gap:50px; align-items:center; position:relative;">
+        <div>
+          <p style="font-family:'Tajawal',sans-serif; font-size:14px; letter-spacing:.14em; margin:0 0 16px; color:#F4D35E; font-weight:700;">{{ heroKicker }}</p>
+          <h1 style="font-family:'El Messiri',sans-serif; font-weight:700; font-size:54px; line-height:1.14; margin:0 0 20px; text-wrap:balance;">{{ heroTitle }}</h1>
+          <p style="font-family:'Cairo',sans-serif; font-size:18px; line-height:1.7; margin:0 0 30px; max-width:480px; color:rgba(255,248,240,.88);">{{ heroSub }}</p>
+          <div style="display:flex; gap:14px; flex-wrap:wrap;">
+            <button onClick="{{ scrollProjects }}" style="height:56px; padding:0 32px; border:none; background:#E9A23B; color:#FFF8F0; border-radius:999px; font-family:'Cairo',sans-serif; font-weight:700; font-size:17px; cursor:pointer; box-shadow:0 12px 26px rgba(233,162,59,.42);">{{ ctaDonate }}</button>
+            <button onClick="{{ scrollProjects }}" style="height:56px; padding:0 30px; border:1.5px solid rgba(255,248,240,.55); background:transparent; color:#FFF8F0; border-radius:999px; font-family:'Cairo',sans-serif; font-weight:700; font-size:16px; cursor:pointer;">{{ ctaExplore }}</button>
+          </div>
+        </div>
+        <div style="position:relative;">
+          <div style="border-radius:26px; overflow:hidden; box-shadow:0 30px 70px rgba(0,0,0,.28); aspect-ratio:5/4; background:#1B3A2B;">
+            <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="thwb-hero" shape="rect" placeholder="{{ heroPhotoHint }}" style="width:100%;height:100%;display:block;" hint-size="100%,100%"></x-import>
+          </div>
+          <div style="position:absolute; inset-block-end:-26px; inset-inline-start:-26px; background:#FFF8F0; color:#1B3A2B; border-radius:18px; padding:16px 20px; box-shadow:0 18px 40px rgba(0,0,0,.20); display:flex; align-items:center; gap:13px;">
+            <div style="flex:none; display:flex; gap:2px;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="#E9A23B"><path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.06 .66 1.04-3.34A6.96 6.96 0 0 0 9 19c4 0 8-4 8-11z"></path></svg>
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="#E9A23B"><path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.06 .66 1.04-3.34A6.96 6.96 0 0 0 9 19c4 0 8-4 8-11z"></path></svg>
+            </div>
+            <div>
+              <div style="font-family:'El Messiri',sans-serif; font-weight:700; font-size:16px; line-height:1.25; white-space:nowrap;">{{ heroBadgeTitle }}</div>
+              <div style="font-family:'Cairo',sans-serif; font-size:12.5px; color:rgba(27,58,43,.6); white-space:nowrap;">{{ heroBadgeSub }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- impact stats -->
+    <section style="max-width:1180px; margin:0 auto; padding:54px 28px 12px;">
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:20px;">
+        <sc-for list="{{ statsView }}" as="s" hint-placeholder-count="4">
+          <div style="background:#fff; border:1px solid rgba(45,106,79,.10); border-radius:18px; padding:26px 18px; text-align:center; box-shadow:0 8px 22px rgba(27,58,43,.05);">
+            <div style="font-family:'Tajawal',sans-serif; font-weight:800; font-size:42px; color:#2D6A4F; line-height:1; direction:ltr;">{{ s.value }}</div>
+            <div style="font-family:'Cairo',sans-serif; font-size:14px; color:rgba(27,58,43,.62); margin-top:10px; font-weight:600;">{{ s.label }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- permanent projects -->
+    <section id="thwb-projects" style="max-width:1180px; margin:0 auto; padding:48px 28px 8px;">
+      <div style="display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:24px;">
+        <div>
+          <h2 style="font-family:'El Messiri',sans-serif; font-weight:700; font-size:32px; color:#1B3A2B; margin:0 0 6px;">{{ sectionPermTitle }}</h2>
+          <p style="font-family:'Cairo',sans-serif; font-size:15px; color:rgba(27,58,43,.6); margin:0;">{{ sectionPermSub }}</p>
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:22px;">
+        <sc-for list="{{ permProjects }}" as="p" hint-placeholder-count="3">
+          <div onClick="{{ p.open }}" style="background:#fff; border-radius:20px; overflow:hidden; box-shadow:0 12px 30px rgba(27,58,43,.09); cursor:pointer; border:1px solid rgba(45,106,79,.07); transition:transform .18s, box-shadow .18s;" style-hover="transform:translateY(-4px); box-shadow:0 20px 42px rgba(27,58,43,.16);">
+            <div style="position:relative; width:100%; aspect-ratio:16/9; overflow:hidden; background:#E8F0EA;">
+              <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ p.slotId }}" shape="rect" placeholder="{{ p.photoHint }}" style="width:100%;height:100%;display:block;" hint-size="100%,100%"></x-import>
+              <span style="position:absolute; top:13px; inset-inline-start:13px; background:{{ p.catBg }}; color:#fff; font-family:'Cairo',sans-serif; font-size:12.5px; font-weight:700; padding:5px 13px; border-radius:999px;">{{ p.cat }}</span>
+            </div>
+            <div style="padding:20px 20px 22px; display:flex; flex-direction:column; gap:12px;">
+              <h3 style="font-family:'El Messiri',sans-serif; font-weight:700; font-size:22px; color:#1B3A2B; margin:0;">{{ p.title }}</h3>
+              <p style="font-family:'Cairo',sans-serif; font-size:14px; color:rgba(27,58,43,.66); margin:0; line-height:1.55; min-height:43px;">{{ p.desc }}</p>
+              <dc-import name="BlessingBar" pct="{{ p.pct }}" lang="{{ lang }}" hint-size="100%,24px"></dc-import>
+              <button onClick="{{ p.open }}" style="margin-top:4px; height:46px; border:1.5px solid #2D6A4F; background:transparent; color:#2D6A4F; border-radius:999px; font-family:'Cairo',sans-serif; font-weight:700; font-size:15px; cursor:pointer;" style-hover="background:#2D6A4F; color:#FFF8F0;">{{ ctaDonateThis }}</button>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- seasonal -->
+    <section style="margin-top:52px; background:linear-gradient(180deg, rgba(201,104,58,.07), rgba(244,211,94,.05)); padding:50px 0;">
+      <div style="max-width:1180px; margin:0 auto; padding:0 28px;">
+        <div style="display:flex; align-items:center; gap:14px; margin-bottom:24px;">
+          <span style="background:#C9683A; color:#fff; font-family:'Cairo',sans-serif; font-size:13px; font-weight:700; padding:7px 15px; border-radius:999px; display:flex; align-items:center; gap:7px;">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="#F4D35E"><path d="M19 12a7 7 0 1 1-7-7 5.5 5.5 0 1 0 7 7z"></path></svg>
+            {{ seasonalTag }}
+          </span>
+          <h2 style="font-family:'El Messiri',sans-serif; font-weight:700; font-size:30px; color:#1B3A2B; margin:0;">{{ sectionSeasonalTitle }}</h2>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:22px;">
+          <sc-for list="{{ seasonalProjects }}" as="p" hint-placeholder-count="2">
+            <div onClick="{{ p.open }}" style="display:flex; gap:18px; background:#fff; border-radius:20px; overflow:hidden; box-shadow:0 12px 30px rgba(27,58,43,.09); cursor:pointer; border:1px solid rgba(201,104,58,.14); padding:16px;" style-hover="box-shadow:0 18px 40px rgba(27,58,43,.15);">
+              <div style="position:relative; flex:none; width:170px; aspect-ratio:1/1; border-radius:15px; overflow:hidden; background:#FBE6D2;">
+                <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ p.slotId }}" shape="rect" placeholder="{{ p.photoHint }}" style="width:100%;height:100%;display:block;" hint-size="100%,100%"></x-import>
+              </div>
+              <div style="flex:1; display:flex; flex-direction:column; gap:11px; justify-content:center;">
+                <h3 style="font-family:'El Messiri',sans-serif; font-weight:700; font-size:21px; color:#1B3A2B; margin:0;">{{ p.title }}</h3>
+                <p style="font-family:'Cairo',sans-serif; font-size:13.5px; color:rgba(27,58,43,.66); margin:0; line-height:1.5;">{{ p.desc }}</p>
+                <dc-import name="BlessingBar" pct="{{ p.pct }}" lang="{{ lang }}" leafSize="{{ seasonalLeafSize }}" hint-size="100%,22px"></dc-import>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- trust strip -->
+    <section style="max-width:1180px; margin:44px auto 0; padding:0 28px;">
+      <div style="background:#EAF1EC; border-radius:20px; padding:28px 34px; display:flex; align-items:center; gap:28px; flex-wrap:wrap; justify-content:center;">
+        <div style="display:flex; align-items:center; gap:13px;">
+          <div style="flex:none; width:46px; height:46px; border-radius:50%; background:#2D6A4F; display:flex; align-items:center; justify-content:center;">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#F4D35E" stroke-width="2"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5z"></path><path d="M9 12l2 2 4-4" stroke="#FFF8F0"></path></svg>
+          </div>
+          <p style="font-family:'Cairo',sans-serif; font-size:14px; color:#1B3A2B; margin:0; line-height:1.5; max-width:340px; font-weight:600;">{{ trustText }}</p>
+        </div>
+        <div style="width:1px; height:38px; background:rgba(45,106,79,.2);"></div>
+        <p style="font-family:'Tajawal',sans-serif; font-size:14px; color:rgba(27,58,43,.7); margin:0; font-weight:500;">{{ trustCities }}</p>
+      </div>
+    </section>
+
+    <!-- footer -->
+    <footer style="margin-top:54px; background:#1B3A2B; color:rgba(255,248,240,.72); padding:48px 0 30px;">
+      <div style="max-width:1180px; margin:0 auto; padding:0 28px; display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:36px;">
+        <div>
+          <div style="display:flex; align-items:center; gap:9px; margin-bottom:14px;">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="#E9A23B"><path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.06 .66 1.04-3.34A6.96 6.96 0 0 0 9 19c4 0 8-4 8-11z"></path></svg>
+            <span style="font-family:'El Messiri',sans-serif; font-weight:700; font-size:24px; color:#FFF8F0;">{{ brandName }}</span>
+          </div>
+          <p style="font-family:'Cairo',sans-serif; font-size:14px; line-height:1.7; margin:0; max-width:330px;">{{ footerLine }}</p>
+        </div>
+        <div>
+          <h4 style="font-family:'Cairo',sans-serif; font-size:15px; color:#FFF8F0; margin:0 0 14px; font-weight:700;">{{ footerContactTitle }}</h4>
+          <p style="font-family:'Tajawal',sans-serif; font-size:14px; line-height:2; margin:0; direction:ltr; text-align:start;">{{ footerContact }}</p>
+        </div>
+        <div>
+          <h4 style="font-family:'Cairo',sans-serif; font-size:15px; color:#FFF8F0; margin:0 0 14px; font-weight:700;">{{ footerPayTitle }}</h4>
+          <div style="display:flex; gap:9px; flex-wrap:wrap;">
+            <sc-for list="{{ payMethods }}" as="m" hint-placeholder-count="4">
+              <span style="font-family:'Tajawal',sans-serif; font-size:12px; font-weight:700; color:rgba(255,248,240,.88); background:rgba(255,248,240,.10); border:1px solid rgba(255,248,240,.18); padding:8px 12px; border-radius:8px;">{{ m }}</span>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+      <div style="max-width:1180px; margin:30px auto 0; padding:18px 28px 0; border-top:1px solid rgba(255,248,240,.12);">
+        <p style="font-family:'Tajawal',sans-serif; font-size:12px; margin:0; color:rgba(255,248,240,.5);">{{ footerCredit }}</p>
+      </div>
+    </footer>
+  </main>
+  </sc-if>
+
+  <!-- ============ DETAIL ============ -->
+  <sc-if value="{{ isDetail }}" hint-placeholder-val="{{ false }}">
+  <main data-screen-label="Project Detail" style="max-width:1180px; margin:0 auto; padding:30px 28px 70px;">
+    <button onClick="{{ goHome }}" style="display:flex; align-items:center; gap:8px; background:none; border:none; cursor:pointer; color:#2D6A4F; font-family:'Cairo',sans-serif; font-weight:700; font-size:15px; padding:8px 0; margin-bottom:18px;">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#2D6A4F" stroke-width="2.4" style="transform:{{ backArrowTransform }}"><path d="M15 5l-7 7 7 7"></path></svg>
+      {{ backLabel }}
+    </button>
+    <div style="display:grid; grid-template-columns:1.1fr .9fr; gap:40px; align-items:start;">
+      <!-- left: media + story -->
+      <div>
+        <div style="position:relative; border-radius:22px; overflow:hidden; aspect-ratio:16/10; background:#E8F0EA; box-shadow:0 16px 40px rgba(27,58,43,.12);">
+          <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ dp.detailSlotId }}" shape="rect" placeholder="{{ dp.photoHint }}" style="width:100%;height:100%;display:block;" hint-size="100%,100%"></x-import>
+          <span style="position:absolute; top:16px; inset-inline-start:16px; background:{{ dp.catBg }}; color:#fff; font-family:'Cairo',sans-serif; font-size:13px; font-weight:700; padding:6px 15px; border-radius:999px;">{{ dp.cat }}</span>
+        </div>
+        <h1 style="font-family:'El Messiri',sans-serif; font-weight:700; font-size:34px; color:#1B3A2B; margin:24px 0 16px;">{{ dp.title }}</h1>
+        <p style="font-family:'Cairo',sans-serif; font-size:16px; line-height:1.8; color:rgba(27,58,43,.82); margin:0;">{{ dp.long }}</p>
+      </div>
+
+      <!-- right: donation panel -->
+      <div style="position:sticky; top:94px; background:#fff; border:1px solid rgba(45,106,79,.12); border-radius:22px; padding:26px; box-shadow:0 16px 40px rgba(27,58,43,.10);">
+        <div style="background:#F7F2E9; border-radius:14px; padding:16px; margin-bottom:22px;">
+          <dc-import name="BlessingBar" pct="{{ dp.pct }}" lang="{{ lang }}" leafSize="{{ detailLeafSize }}" hint-size="100%,26px"></dc-import>
+          <div style="display:flex; justify-content:space-between; margin-top:12px; font-family:'Tajawal',sans-serif; font-size:13.5px; color:rgba(27,58,43,.72);">
+            <span><b style="color:#2D6A4F; font-size:15px;">{{ dp.raised }}</b> {{ raisedLabel }}</span>
+            <span>{{ goalPrefix }} <b>{{ dp.goal }}</b></span>
+          </div>
+        </div>
+
+        <h3 style="font-family:'Cairo',sans-serif; font-weight:700; font-size:16px; color:#1B3A2B; margin:0 0 13px;">{{ chooseAmountLabel }}</h3>
+        <div style="display:flex; gap:9px; flex-wrap:wrap; margin-bottom:13px;">
+          <sc-for list="{{ dp.presets }}" as="c" hint-placeholder-count="5">
+            <button onClick="{{ c.pick }}" style="{{ c.style }}">{{ c.label }}</button>
+          </sc-for>
+        </div>
+        <div style="position:relative; margin-bottom:20px;">
+          <input value="{{ dp.customAmount }}" onInput="{{ dp.setCustom }}" inputMode="numeric" placeholder="{{ customPlaceholder }}" style="width:100%; height:54px; border:1.5px solid rgba(45,106,79,.30); background:#FFF8F0; border-radius:14px; padding:0 58px 0 18px; font-family:'Tajawal',sans-serif; font-size:17px; font-weight:700; color:#1B3A2B; outline:none;">
+          <span style="position:absolute; inset-inline-end:18px; top:50%; transform:translateY(-50%); font-family:'Tajawal',sans-serif; font-size:15px; font-weight:700; color:rgba(27,58,43,.5);">{{ currency }}</span>
+        </div>
+
+        <div style="background:#EAF1EC; border-radius:16px; padding:16px 18px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; gap:12px;">
+          <div style="min-width:0;">
+            <div style="font-family:'Cairo',sans-serif; font-size:12.5px; color:rgba(27,58,43,.6); font-weight:600; margin-bottom:4px;">{{ impactCaption }}</div>
+            <div style="font-family:'El Messiri',sans-serif; font-weight:700; font-size:19px; color:#2D6A4F;">{{ dp.impactLabel }}</div>
+          </div>
+          <div style="flex:none; display:flex; align-items:center; gap:0; background:#fff; border-radius:999px; padding:4px; border:1px solid rgba(45,106,79,.18);">
+            <button onClick="{{ dp.dec }}" aria-label="minus" style="width:40px;height:40px;border:none;background:transparent;font-size:26px;color:#2D6A4F;cursor:pointer;line-height:1;border-radius:50%;">−</button>
+            <span style="min-width:32px;text-align:center;font-family:'Tajawal',sans-serif;font-weight:800;font-size:19px;color:#1B3A2B;direction:ltr;">{{ dp.quantity }}</span>
+            <button onClick="{{ dp.inc }}" aria-label="plus" style="width:40px;height:40px;border:none;background:#2D6A4F;color:#fff;font-size:24px;cursor:pointer;line-height:1;border-radius:50%;">+</button>
+          </div>
+        </div>
+
+        <!-- gift toggle -->
+        <button onClick="{{ dp.toggleGift }}" style="width:100%; display:flex; align-items:center; justify-content:space-between; background:{{ dp.giftRowBg }}; border:1.5px solid {{ dp.giftRowBorder }}; border-radius:14px; padding:14px 16px; margin-bottom:20px; cursor:pointer;">
+          <span style="display:flex; align-items:center; gap:10px; font-family:'Cairo',sans-serif; font-weight:700; font-size:14.5px; color:#1B3A2B;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#C9683A" stroke-width="1.9"><rect x="3" y="8" width="18" height="13" rx="2"></rect><path d="M3 12h18M12 8v13M12 8S9 3 6.5 4.5 9 8 12 8zM12 8s3-5 5.5-3.5S15 8 12 8z"></path></svg>
+            {{ giftToggleLabel }}
+          </span>
+          <span style="width:46px; height:26px; border-radius:99px; background:{{ dp.giftSwitchBg }}; position:relative; transition:background .2s; flex:none;">
+            <span style="position:absolute; top:3px; inset-inline-start:{{ dp.giftKnobPos }}; width:20px; height:20px; border-radius:50%; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.3); transition:inset-inline-start .2s;"></span>
+          </span>
+        </button>
+
+        <div style="display:flex; flex-direction:column; gap:11px;">
+          <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:2px;">
+            <span style="font-family:'Cairo',sans-serif; font-size:14px; color:rgba(27,58,43,.6); font-weight:600;">{{ totalLabel }}</span>
+            <span style="font-family:'Tajawal',sans-serif; font-weight:800; font-size:24px; color:#1B3A2B; direction:ltr;">{{ dp.totalDisplay }}</span>
+          </div>
+          <button onClick="{{ dp.donateNow }}" style="height:56px; border:none; background:#E9A23B; color:#FFF8F0; border-radius:999px; font-family:'Cairo',sans-serif; font-weight:700; font-size:17px; cursor:pointer; box-shadow:0 10px 24px rgba(233,162,59,.40);">{{ ctaDonate }}</button>
+          <button onClick="{{ dp.addToCart }}" style="height:52px; border:1.5px solid #2D6A4F; background:transparent; color:#2D6A4F; border-radius:999px; font-family:'Cairo',sans-serif; font-weight:700; font-size:15px; cursor:pointer;">{{ ctaAddCart }}</button>
+        </div>
+      </div>
+    </div>
+  </main>
+  </sc-if>
+
+  <!-- ============ GIFT BUILDER ============ -->
+  <sc-if value="{{ isGift }}" hint-placeholder-val="{{ false }}">
+  <main data-screen-label="Gift Builder" style="max-width:1080px; margin:0 auto; padding:30px 28px 70px;">
+    <button onClick="{{ backToDetail }}" style="display:flex; align-items:center; gap:8px; background:none; border:none; cursor:pointer; color:#2D6A4F; font-family:'Cairo',sans-serif; font-weight:700; font-size:15px; padding:8px 0; margin-bottom:10px;">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#2D6A4F" stroke-width="2.4" style="transform:{{ backArrowTransform }}"><path d="M15 5l-7 7 7 7"></path></svg>
+      {{ backLabel }}
+    </button>
+    <h1 style="font-family:'El Messiri',sans-serif; font-weight:700; font-size:32px; color:#1B3A2B; margin:0 0 6px;">{{ giftTitle }}</h1>
+    <p style="font-family:'Cairo',sans-serif; font-size:15px; color:rgba(27,58,43,.65); margin:0 0 28px;">{{ giftSub }}</p>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:start;">
+      <!-- form -->
+      <div>
+        <h3 style="font-family:'Cairo',sans-serif; font-weight:700; font-size:15px; color:#1B3A2B; margin:0 0 12px;">{{ giftPickLabel }}</h3>
+        <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:11px; margin-bottom:24px;">
+          <sc-for list="{{ giftTemplates }}" as="t" hint-placeholder-count="4">
+            <button onClick="{{ t.pick }}" style="{{ t.style }}">
+              <span style="font-size:28px; line-height:1;">{{ t.emoji }}</span>
+              <span style="font-family:'Cairo',sans-serif; font-size:12px; font-weight:700; color:#1B3A2B;">{{ t.label }}</span>
+            </button>
+          </sc-for>
+        </div>
+        <label style="font-family:'Cairo',sans-serif; font-weight:700; font-size:14px; color:#1B3A2B; display:block; margin-bottom:8px;">{{ giftNameLabel }}</label>
+        <input value="{{ giftRecipient }}" onInput="{{ setGiftRecipient }}" placeholder="{{ giftNamePh }}" style="width:100%; height:52px; border:1.5px solid rgba(45,106,79,.30); background:#fff; border-radius:13px; padding:0 16px; font-family:'Cairo',sans-serif; font-size:15px; color:#1B3A2B; outline:none; margin-bottom:18px;">
+        <label style="font-family:'Cairo',sans-serif; font-weight:700; font-size:14px; color:#1B3A2B; display:block; margin-bottom:8px;">{{ giftMsgLabel }}</label>
+        <textarea value="{{ giftMessage }}" onInput="{{ setGiftMessage }}" placeholder="{{ giftMsgPh }}" rows="4" style="width:100%; border:1.5px solid rgba(45,106,79,.30); background:#fff; border-radius:13px; padding:13px 16px; font-family:'Cairo',sans-serif; font-size:15px; color:#1B3A2B; outline:none; resize:none; line-height:1.6;"></textarea>
+        <button onClick="{{ giftContinue }}" style="margin-top:24px; width:100%; height:56px; border:none; background:#E9A23B; color:#FFF8F0; border-radius:999px; font-family:'Cairo',sans-serif; font-weight:700; font-size:17px; cursor:pointer; box-shadow:0 10px 24px rgba(233,162,59,.40);">{{ giftContinueLabel }}</button>
+      </div>
+      <!-- live preview -->
+      <div style="position:sticky; top:94px;">
+        <p style="font-family:'Cairo',sans-serif; font-size:13px; color:rgba(27,58,43,.55); font-weight:600; margin:0 0 12px; text-align:center;">{{ giftPreviewLabel }}</p>
+        <div style="border-radius:22px; overflow:hidden; box-shadow:0 20px 50px rgba(27,58,43,.18); aspect-ratio:7/9; background:{{ giftCardBg }}; position:relative; display:flex; flex-direction:column; justify-content:space-between; padding:30px 28px;">
+          <div style="position:absolute; inset-block-start:-40px; inset-inline-end:-40px; width:180px; height:180px; border-radius:50%; background:rgba(255,255,255,.22);"></div>
+          <div style="position:relative; text-align:center;">
+            <div style="font-size:64px; line-height:1; margin-bottom:10px;">{{ giftPreviewEmoji }}</div>
+            <div style="font-family:'El Messiri',sans-serif; font-weight:700; font-size:20px; color:{{ giftCardInk }};">{{ giftCardKicker }}</div>
+          </div>
+          <div style="position:relative; text-align:center;">
+            <div style="font-family:'Cairo',sans-serif; font-size:13px; color:{{ giftCardInkSoft }}; margin-bottom:6px;">{{ giftToLabel }}</div>
+            <div style="font-family:'El Messiri',sans-serif; font-weight:700; font-size:26px; color:{{ giftCardInk }}; margin-bottom:16px; min-height:32px;">{{ giftRecipientDisplay }}</div>
+            <p style="font-family:'Cairo',sans-serif; font-size:15px; line-height:1.7; color:{{ giftCardInk }}; margin:0; min-height:50px;">{{ giftMessageDisplay }}</p>
+          </div>
+          <div style="position:relative; display:flex; align-items:center; justify-content:center; gap:8px; opacity:.85;">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="{{ giftCardInk }}"><path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.06 .66 1.04-3.34A6.96 6.96 0 0 0 9 19c4 0 8-4 8-11z"></path></svg>
+            <span style="font-family:'El Messiri',sans-serif; font-weight:700; font-size:15px; color:{{ giftCardInk }};">{{ brandName }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  </sc-if>
+
+  <!-- ============ CART ============ -->
+  <sc-if value="{{ isCart }}" hint-placeholder-val="{{ false }}">
+  <main data-screen-label="Cart" style="max-width:920px; margin:0 auto; padding:30px 28px 70px;">
+    <button onClick="{{ goHome }}" style="display:flex; align-items:center; gap:8px; background:none; border:none; cursor:pointer; color:#2D6A4F; font-family:'Cairo',sans-serif; font-weight:700; font-size:15px; padding:8px 0; margin-bottom:14px;">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#2D6A4F" stroke-width="2.4" style="transform:{{ backArrowTransform }}"><path d="M15 5l-7 7 7 7"></path></svg>
+      {{ continueLabel }}
+    </button>
+    <h1 style="font-family:'El Messiri',sans-serif; font-weight:700; font-size:34px; color:#1B3A2B; margin:0 0 24px;">{{ cartTitle }}</h1>
+
+    <sc-if value="{{ hasCart }}" hint-placeholder-val="{{ true }}">
+    <div style="display:grid; grid-template-columns:1.5fr 1fr; gap:30px; align-items:start;">
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <sc-for list="{{ cartView }}" as="it" hint-placeholder-count="2">
+          <div style="background:#fff; border:1px solid rgba(45,106,79,.12); border-radius:18px; padding:18px 20px; display:flex; align-items:center; gap:16px;">
+            <div style="flex:none; width:58px; height:58px; border-radius:14px; background:{{ it.catBg }}; display:flex; align-items:center; justify-content:center; font-size:26px;">{{ it.emoji }}</div>
+            <div style="flex:1; min-width:0;">
+              <div style="font-family:'El Messiri',sans-serif; font-weight:700; font-size:18px; color:#1B3A2B;">{{ it.title }}</div>
+              <div style="font-family:'Cairo',sans-serif; font-size:13px; color:rgba(27,58,43,.6); margin-top:3px;">{{ it.sub }}</div>
+            </div>
+            <div style="text-align:end; flex:none;">
+              <div style="font-family:'Tajawal',sans-serif; font-weight:800; font-size:18px; color:#1B3A2B; direction:ltr;">{{ it.total }}</div>
+              <button onClick="{{ it.remove }}" style="background:none; border:none; cursor:pointer; color:#C9683A; font-family:'Cairo',sans-serif; font-size:12.5px; font-weight:700; padding:4px 0; margin-top:2px;">{{ removeLabel }}</button>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="background:#fff; border:1px solid rgba(45,106,79,.12); border-radius:20px; padding:24px; box-shadow:0 14px 34px rgba(27,58,43,.08); position:sticky; top:94px;">
+        <h3 style="font-family:'Cairo',sans-serif; font-weight:700; font-size:16px; color:#1B3A2B; margin:0 0 18px;">{{ summaryLabel }}</h3>
+        <div style="display:flex; justify-content:space-between; font-family:'Cairo',sans-serif; font-size:14px; color:rgba(27,58,43,.7); margin-bottom:10px;">
+          <span>{{ subtotalLabel }}</span><span style="direction:ltr;">{{ cartSubtotal }}</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-family:'Cairo',sans-serif; font-size:14px; color:rgba(27,58,43,.7); margin-bottom:16px;">
+          <span>{{ feesLabel }}</span><span>{{ feesValue }}</span>
+        </div>
+        <div style="height:1px; background:rgba(45,106,79,.14); margin-bottom:16px;"></div>
+        <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:22px;">
+          <span style="font-family:'Cairo',sans-serif; font-weight:700; font-size:16px; color:#1B3A2B;">{{ totalLabel }}</span>
+          <span style="font-family:'Tajawal',sans-serif; font-weight:800; font-size:26px; color:#2D6A4F; direction:ltr;">{{ cartTotal }}</span>
+        </div>
+        <button onClick="{{ goCheckout }}" style="width:100%; height:56px; border:none; background:#E9A23B; color:#FFF8F0; border-radius:999px; font-family:'Cairo',sans-serif; font-weight:700; font-size:17px; cursor:pointer; box-shadow:0 10px 24px rgba(233,162,59,.40);">{{ checkoutLabel }}</button>
+      </div>
+    </div>
+    </sc-if>
+    <sc-if value="{{ cartEmpty }}" hint-placeholder-val="{{ false }}">
+    <div style="text-align:center; padding:60px 20px; background:#fff; border-radius:20px; border:1px solid rgba(45,106,79,.1);">
+      <div style="font-size:54px; margin-bottom:14px;">🌱</div>
+      <p style="font-family:'El Messiri',sans-serif; font-weight:700; font-size:22px; color:#1B3A2B; margin:0 0 8px;">{{ cartEmptyTitle }}</p>
+      <p style="font-family:'Cairo',sans-serif; font-size:15px; color:rgba(27,58,43,.6); margin:0 0 24px;">{{ cartEmptySub }}</p>
+      <button onClick="{{ goHome }}" style="height:52px; padding:0 30px; border:none; background:#2D6A4F; color:#FFF8F0; border-radius:999px; font-family:'Cairo',sans-serif; font-weight:700; font-size:15px; cursor:pointer;">{{ ctaExplore }}</button>
+    </div>
+    </sc-if>
+  </main>
+  </sc-if>
+
+  <!-- ============ CHECKOUT ============ -->
+  <sc-if value="{{ isCheckout }}" hint-placeholder-val="{{ false }}">
+  <main data-screen-label="Checkout" style="max-width:920px; margin:0 auto; padding:30px 28px 70px;">
+    <button onClick="{{ goCart }}" style="display:flex; align-items:center; gap:8px; background:none; border:none; cursor:pointer; color:#2D6A4F; font-family:'Cairo',sans-serif; font-weight:700; font-size:15px; padding:8px 0; margin-bottom:14px;">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#2D6A4F" stroke-width="2.4" style="transform:{{ backArrowTransform }}"><path d="M15 5l-7 7 7 7"></path></svg>
+      {{ backLabel }}
+    </button>
+    <h1 style="font-family:'El Messiri',sans-serif; font-weight:700; font-size:34px; color:#1B3A2B; margin:0 0 24px;">{{ checkoutTitle }}</h1>
+    <div style="display:grid; grid-template-columns:1.4fr 1fr; gap:30px; align-items:start;">
+      <div style="background:#fff; border:1px solid rgba(45,106,79,.12); border-radius:20px; padding:28px;">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+          <div>
+            <label style="font-family:'Cairo',sans-serif; font-weight:700; font-size:13.5px; color:#1B3A2B; display:block; margin-bottom:7px;">{{ firstNameLabel }}</label>
+            <input value="{{ co.firstName }}" onInput="{{ co.setFirst }}" style="{{ co.firstStyle }}">
+          </div>
+          <div>
+            <label style="font-family:'Cairo',sans-serif; font-weight:700; font-size:13.5px; color:#1B3A2B; display:block; margin-bottom:7px;">{{ lastNameLabel }}</label>
+            <input value="{{ co.lastName }}" onInput="{{ co.setLast }}" style="{{ co.lastStyle }}">
+          </div>
+        </div>
+        <div style="margin-bottom:16px;">
+          <label style="font-family:'Cairo',sans-serif; font-weight:700; font-size:13.5px; color:#1B3A2B; display:block; margin-bottom:7px;">{{ emailLabel }}</label>
+          <input value="{{ co.email }}" onInput="{{ co.setEmail }}" inputMode="email" style="{{ co.emailStyle }}">
+          <sc-if value="{{ co.emailError }}" hint-placeholder-val="{{ false }}"><span style="font-family:'Cairo',sans-serif; font-size:12.5px; color:#C9683A; margin-top:6px; display:block;">{{ emailErrorMsg }}</span></sc-if>
+        </div>
+        <div style="margin-bottom:24px;">
+          <label style="font-family:'Cairo',sans-serif; font-weight:700; font-size:13.5px; color:#1B3A2B; display:block; margin-bottom:7px;">{{ phoneLabel }}</label>
+          <input value="{{ co.phone }}" onInput="{{ co.setPhone }}" inputMode="tel" style="{{ co.phoneStyle }}">
+        </div>
+        <h3 style="font-family:'Cairo',sans-serif; font-weight:700; font-size:15px; color:#1B3A2B; margin:0 0 12px;">{{ payMethodLabel }}</h3>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <button onClick="{{ co.pickCard }}" style="{{ co.cardStyle }}">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="2" y="5" width="20" height="14" rx="2"></rect><path d="M2 10h20"></path></svg>
+            {{ payCardLabel }}
+          </button>
+          <button onClick="{{ co.pickWallet }}" style="{{ co.walletStyle }}">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="6" width="18" height="13" rx="2"></rect><path d="M16 12h2"></path></svg>
+            {{ payWalletLabel }}
+          </button>
+        </div>
+      </div>
+      <div style="background:#fff; border:1px solid rgba(45,106,79,.12); border-radius:20px; padding:24px; box-shadow:0 14px 34px rgba(27,58,43,.08); position:sticky; top:94px;">
+        <h3 style="font-family:'Cairo',sans-serif; font-weight:700; font-size:16px; color:#1B3A2B; margin:0 0 16px;">{{ summaryLabel }}</h3>
+        <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:16px;">
+          <sc-for list="{{ cartView }}" as="it" hint-placeholder-count="2">
+            <div style="display:flex; justify-content:space-between; font-family:'Cairo',sans-serif; font-size:13.5px; color:rgba(27,58,43,.78);">
+              <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:160px;">{{ it.title }}</span>
+              <span style="direction:ltr; flex:none; margin-inline-start:10px;">{{ it.total }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="height:1px; background:rgba(45,106,79,.14); margin-bottom:16px;"></div>
+        <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:22px;">
+          <span style="font-family:'Cairo',sans-serif; font-weight:700; font-size:16px; color:#1B3A2B;">{{ totalLabel }}</span>
+          <span style="font-family:'Tajawal',sans-serif; font-weight:800; font-size:26px; color:#2D6A4F; direction:ltr;">{{ cartTotal }}</span>
+        </div>
+        <button onClick="{{ confirmDonation }}" style="width:100%; height:58px; border:none; background:#E9A23B; color:#FFF8F0; border-radius:999px; font-family:'Cairo',sans-serif; font-weight:700; font-size:17px; cursor:pointer; box-shadow:0 10px 24px rgba(233,162,59,.40);">{{ confirmLabel }}</button>
+        <p style="font-family:'Cairo',sans-serif; font-size:12px; color:rgba(27,58,43,.5); text-align:center; margin:14px 0 0; line-height:1.5;">{{ secureNote }}</p>
+      </div>
+    </div>
+  </main>
+  </sc-if>
+
+  <!-- ============ CONFIRMATION ============ -->
+  <sc-if value="{{ isConfirm }}" hint-placeholder-val="{{ false }}">
+  <main data-screen-label="Confirmation" style="max-width:640px; margin:0 auto; padding:60px 28px 80px; text-align:center;">
+    <div style="width:108px; height:108px; border-radius:50%; background:#2D6A4F; display:flex; align-items:center; justify-content:center; margin:0 auto 28px; animation:thwb-pop .5s ease;">
+      <svg viewBox="0 0 24 24" width="56" height="56" fill="none" stroke="#F4D35E" stroke-width="2.6"><path d="M5 13l4 4L19 7"></path></svg>
+    </div>
+    <h1 style="font-family:'El Messiri',sans-serif; font-weight:700; font-size:38px; color:#1B3A2B; margin:0 0 16px; line-height:1.25; text-wrap:balance;">{{ confirmHeadline }}</h1>
+    <p style="font-family:'Cairo',sans-serif; font-size:17px; line-height:1.7; color:rgba(27,58,43,.7); margin:0 auto 30px; max-width:440px;">{{ confirmBody }}</p>
+    <div style="background:#fff; border:1px solid rgba(45,106,79,.12); border-radius:20px; padding:22px 26px; margin-bottom:30px; display:inline-flex; gap:40px; box-shadow:0 12px 30px rgba(27,58,43,.08);">
+      <div>
+        <div style="font-family:'Cairo',sans-serif; font-size:12.5px; color:rgba(27,58,43,.55); font-weight:600; margin-bottom:5px;">{{ confirmRefLabel }}</div>
+        <div style="font-family:'Tajawal',sans-serif; font-weight:800; font-size:18px; color:#2D6A4F; direction:ltr;">{{ confirmRef }}</div>
+      </div>
+      <div style="width:1px; background:rgba(45,106,79,.14);"></div>
+      <div>
+        <div style="font-family:'Cairo',sans-serif; font-size:12.5px; color:rgba(27,58,43,.55); font-weight:600; margin-bottom:5px;">{{ confirmAmountLabel }}</div>
+        <div style="font-family:'Tajawal',sans-serif; font-weight:800; font-size:18px; color:#2D6A4F; direction:ltr;">{{ confirmAmount }}</div>
+      </div>
+    </div>
+    <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap;">
+      <button onClick="{{ goHome }}" style="height:54px; padding:0 30px; border:none; background:#2D6A4F; color:#FFF8F0; border-radius:999px; font-family:'Cairo',sans-serif; font-weight:700; font-size:16px; cursor:pointer;">{{ confirmHomeLabel }}</button>
+      <button onClick="{{ shareImpact }}" style="height:54px; padding:0 26px; border:1.5px solid #2D6A4F; background:transparent; color:#2D6A4F; border-radius:999px; font-family:'Cairo',sans-serif; font-weight:700; font-size:16px; cursor:pointer;">{{ confirmShareLabel }}</button>
+    </div>
+  </main>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1180,&quot;height&quot;:900},&quot;startLanguage&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;ar&quot;,&quot;en&quot;],&quot;default&quot;:&quot;ar&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;countUpStats&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  state = {
+    screen: 'home', lang: 'ar',
+    detailId: null, amount: 200, customAmount: '', quantity: 1,
+    giftOn: false, giftTemplate: 'leaf', giftRecipient: '', giftMessage: '',
+    cart: [],
+    co: { firstName:'', lastName:'', email:'', phone:'', payment:'card', emailErr:false },
+    statNums: [0,0,0,0],
+    lastDonation: null,
+  };
+
+  componentDidMount() {
+    if (this.props.startLanguage && this.props.startLanguage !== this.state.lang) {
+      this.setState({ lang: this.props.startLanguage });
+    }
+    this.animateStats();
+    this.scheduleSlotImages();
+  }
+  componentDidUpdate(_, prev) {
+    if (prev && prev.screen !== this.state.screen) this.scheduleSlotImages();
+  }
+  scheduleSlotImages() {
+    [0, 120, 400, 900].forEach(ms => setTimeout(() => this.applySlotImages(), ms));
+  }
+  _scheduleApply() {
+    if (this._applyT) return;
+    this._applyT = setTimeout(() => { this._applyT = null; this.applySlotImages(); }, 0);
+  }
+  applySlotImages() {
+    document.querySelectorAll('image-slot[id^="thwb-"]').forEach(el => {
+      // The component's :host defaults to 240x160; force it to fill its parent.
+      if (el.style.width !== '100%') { el.style.width = '100%'; el.style.height = '100%'; el.style.display = 'block'; }
+      // Don't fight a user-dropped photo; only seed the brand illustration.
+      if (el.hasAttribute('data-filled') && el.getAttribute('src') !== this._illoFor(el.id)) return;
+      const uri = this._illoFor(el.id);
+      if (el.getAttribute('src') !== uri) el.setAttribute('src', uri);
+    });
+  }
+  _illoFor(id) {
+    let key = id.replace(/^thwb-/, '').replace(/^d-/, '');
+    if (key === 'hero') key = 'orphan';
+    return this.illo(key);
+  }
+  animateStats() {
+    const targets = [5000, 120, 8, 12];
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce || this.props.countUpStats === false || document.hidden) { this.setState({ statNums: targets }); return; }
+    const start = performance.now(), dur = 1100;
+    const tick = (now) => {
+      const t = Math.min(1, (now - start) / dur);
+      const e = 1 - Math.pow(1 - t, 3);
+      this.setState({ statNums: targets.map(v => Math.round(v * e)) });
+      if (t < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+    // Guarantee final values even if rAF is throttled (e.g. backgrounded tab).
+    clearTimeout(this._statFallback);
+    this._statFallback = setTimeout(() => this.setState({ statNums: targets }), 1500);
+  }
+
+  t(ar, en) { return this.state.lang === 'ar' ? ar : en; }
+  fmt(n) { return Number(n).toLocaleString('en-US'); }
+
+  illo(key) {
+    const P = {
+      orphan:  { sky:'#3C8266', sun:'#F4D35E', emblem:'M50 80 C18 56 26 30 50 44 C74 30 82 56 50 80 Z' },
+      water:   { sky:'#2E7C9A', sun:'#F4D35E', emblem:'M50 22 C50 22 74 50 74 64 A24 24 0 0 1 26 64 C26 50 50 22 50 22 Z' },
+      food:    { sky:'#2D6A4F', sun:'#F4D35E', emblem:'M24 52 H76 A26 26 0 0 1 24 52 Z M30 44 V40 M50 44 V38 M70 44 V40' },
+      winter:  { sky:'#5B7C8C', sun:'#F4D35E', emblem:'M50 24 V76 M28 38 L72 62 M72 38 L28 62 M50 24 L44 32 M50 24 L56 32 M28 38 L36 39 M72 62 L64 61' },
+      ramadan: { sky:'#7A4A2E', sun:'#F4D35E', emblem:'M64 28 A26 26 0 1 0 64 78 A20 20 0 1 1 64 28 Z' },
+      zakat:   { sky:'#8A5A2B', sun:'#F4D35E', emblem:'M50 22 V78 M50 36 C42 32 36 36 36 44 C44 46 50 42 50 36 Z M50 36 C58 32 64 36 64 44 C56 46 50 42 50 36 Z M50 52 C42 48 36 52 36 60 C44 62 50 58 50 52 Z M50 52 C58 48 64 52 64 60 C56 62 50 58 50 52 Z' },
+    };
+    const c = P[key] || P.food;
+    const isStroke = (key === 'food' || key === 'winter' || key === 'zakat');
+    const emblem = isStroke
+      ? `<path d="${c.emblem}" fill="none" stroke="#FFF8F0" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>`
+      : `<path d="${c.emblem}" fill="#FFF8F0"/>`;
+    const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='600' height='375' viewBox='0 0 600 375'>
+      <defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'>
+        <stop offset='0' stop-color='${c.sky}'/><stop offset='1' stop-color='#1B3A2B'/></linearGradient></defs>
+      <rect width='600' height='375' fill='url(#g)'/>
+      <circle cx='470' cy='90' r='62' fill='${c.sun}' opacity='.92'/>
+      <path d='M0 300 Q150 250 320 290 T600 270 V375 H0 Z' fill='#1B3A2B' opacity='.55'/>
+      <path d='M0 330 Q200 290 380 320 T600 310 V375 H0 Z' fill='#15301F'/>
+      <circle cx='300' cy='176' r='84' fill='rgba(255,248,240,.14)'/>
+      <g transform='translate(250,126) scale(1.0)'>${emblem}</g>
+    </svg>`;
+    return 'data:image/svg+xml,' + encodeURIComponent(svg).replace(/'/g, '%27');
+  }
+
+  projectsData() {
+    return [
+      { id:'orphan', type:'perm', cat:this.t('كفالة','Sponsorship'), catBg:'#2D6A4F', illo:'orphan', emoji:'🤍', pct:62, raised:310000, goal:500000,
+        title:this.t('كفالة يتيم','Sponsor an Orphan'),
+        desc:this.t('كفالة شهرية ترعى تعليم اليتيم وغذاءه وصحته في أسوان.','Monthly care covering an orphan\u2019s schooling, food and health in Aswan.'),
+        long:this.t('بكفالتك الشهرية تضمن ليتيمٍ بيتاً دافئاً وتعليماً ووجباتٍ منتظمة ورعايةً صحية كاملة. كل كفالة تتابعها أسرة ميدانية في أسوان، وتصلك تقارير دورية عن الطفل الذي تكفله.','Your monthly sponsorship gives an orphan a warm home, schooling, regular meals and full healthcare. Each sponsorship is followed by a field team in Aswan, with regular reports on the child you support.'),
+        verb:this.t('تكفُل','Sponsor'), us:this.t('يتيماً','one orphan'), up:this.t('أيتام','orphans') },
+      { id:'water', type:'perm', cat:this.t('مياه','Water'), catBg:'#2E7C9A', illo:'water', emoji:'💧', pct:45, raised:135000, goal:300000,
+        title:this.t('مياه نظيفة','Clean Water'),
+        desc:this.t('حفر آبار ومحطات تحلية توصل الماء النظيف لقرى أسوان.','Wells and filters bringing clean water to villages around Aswan.'),
+        long:this.t('في القرى البعيدة تقطع الأسر كيلومترات يومياً بحثاً عن الماء. بحفر بئرٍ واحد توفّر مصدراً نظيفاً ودائماً لعشرات الأسر، وتقلّل أمراض المياه الملوثة بشكل كبير.','In remote villages, families walk kilometres each day for water. A single well provides a clean, lasting source for dozens of families and dramatically cuts water-borne disease.'),
+        verb:this.t('تسقي','Give water to'), us:this.t('أسرةً واحدة','one family'), up:this.t('أسر','families') },
+      { id:'food', type:'perm', cat:this.t('غذاء','Food'), catBg:'#2D6A4F', illo:'food', emoji:'🥗', pct:78, raised:234000, goal:300000,
+        title:this.t('سلة غذائية','Food Basket'),
+        desc:this.t('سلة شهرية من المواد الأساسية تكفي أسرة لشهر كامل.','A monthly basket of staples that feeds a family for a full month.'),
+        long:this.t('تحتوي السلة على الأرز والزيت والسكر والبقوليات والمواد الأساسية التي تكفي أسرةً متوسطة شهراً كاملاً. توزَّع مباشرةً على الأسر الأكثر احتياجاً في أسوان.','Each basket contains rice, oil, sugar, legumes and staples enough to feed an average family for a full month, delivered directly to the most in-need families in Aswan.'),
+        verb:this.t('تُطعم','Feed'), us:this.t('أسرةً واحدة','one family'), up:this.t('أسر','families') },
+      { id:'winter', type:'perm', cat:this.t('كسوة','Clothing'), catBg:'#5B7C8C', illo:'winter', emoji:'🧥', pct:33, raised:66000, goal:200000,
+        title:this.t('كسوة الشتاء','Winter Clothing'),
+        desc:this.t('ملابس وأغطية دافئة لأطفال القرى مع برد الشتاء.','Warm clothes and blankets for village children through the cold.'),
+        long:this.t('مع انخفاض الحرارة ليلاً، يفتقر كثير من الأطفال للملابس الدافئة. توفّر الكسوة معطفاً وحذاءً وغطاءً دافئاً لكل طفل، فيمرّ الشتاء بأمان ودفء.','As night temperatures drop, many children lack warm clothing. Each kit provides a coat, shoes and a warm blanket per child, so winter passes safely and warm.'),
+        verb:this.t('تُدفئ','Keep warm'), us:this.t('طفلاً واحداً','one child'), up:this.t('أطفال','children') },
+      { id:'ramadan', type:'season', cat:this.t('رمضان','Ramadan'), catBg:'#C9683A', illo:'ramadan', emoji:'🌙', pct:55, raised:275000, goal:500000,
+        title:this.t('موائد الرحمن','Ramadan Tables'),
+        desc:this.t('وجبات إفطار ساخنة للصائمين طوال شهر رمضان.','Hot iftar meals for those fasting throughout Ramadan.'),
+        long:this.t('على موائد الرحمن يجتمع الصائمون كل مساء على وجبةٍ ساخنة كريمة. تبرعك يضمن إفطاراً متكاملاً لصائمٍ طوال أيام الشهر الفضيل.','At the Ramadan tables, those fasting gather each evening for a hot, dignified meal. Your gift ensures a complete iftar for someone fasting through the holy month.'),
+        verb:this.t('تُفطِر','Provide iftar for'), us:this.t('صائماً واحداً','one person'), up:this.t('صائمين','people') },
+      { id:'zakat', type:'season', cat:this.t('رمضان','Ramadan'), catBg:'#C9683A', illo:'zakat', emoji:'🌾', pct:70, raised:140000, goal:200000,
+        title:this.t('زكاة الفطر','Zakat al-Fitr'),
+        desc:this.t('نُخرج زكاة فطرك طعاماً للأسر قبل صلاة العيد.','We deliver your Zakat al-Fitr as food to families before Eid.'),
+        long:this.t('نتولّى إخراج زكاة الفطر عنك طعاماً يصل الأسر المحتاجة قبل صلاة العيد، تطهيراً للصائم وإدخالاً للفرح على بيوتٍ تنتظر العيد.','We deliver your Zakat al-Fitr as food reaching needy families before the Eid prayer purifying the fast and bringing joy to homes awaiting Eid.'),
+        verb:this.t('تُطعم','Feed'), us:this.t('فرداً واحداً','one person'), up:this.t('أفراد','people') },
+    ];
+  }
+  proj(id) { return this.projectsData().find(p => p.id === id); }
+
+  go(screen) {
+    this.setState({ screen }, () => { if (screen === 'home') this.animateStats(); });
+    window.scrollTo(0, 0);
+  }
+
+  openProject(id) {
+    const p = this.proj(id);
+    this.setState({ screen:'detail', detailId:id, amount:200, customAmount:'', quantity:1, giftOn:false });
+    window.scrollTo(0, 0);
+  }
+
+  selectedAmount() {
+    const c = parseInt(this.state.customAmount, 10);
+    return (this.state.customAmount && !isNaN(c) && c > 0) ? c : this.state.amount;
+  }
+  lineTotal() { return this.selectedAmount() * this.state.quantity; }
+
+  impactPhrase(p, q) {
+    if (this.state.lang === 'ar') {
+      if (q === 1) return `${p.verb} ${p.us}`;
+      if (q === 2) return `${p.verb} ${p.up.replace(/^ا?ل?/,'')} اثنين`;
+      return `${p.verb} ${q} ${p.up}`;
+    }
+    return q === 1 ? `${p.verb} ${p.us}` : `${p.verb} ${q} ${p.up}`;
+  }
+
+  addToCart(donateNow) {
+    const p = this.proj(this.state.detailId);
+    const item = {
+      key: Date.now() + '-' + p.id, id: p.id, title: p.title, emoji: p.emoji, catBg: p.catBg,
+      amount: this.selectedAmount(), quantity: this.state.quantity, total: this.lineTotal(),
+      impact: this.impactPhrase(p, this.state.quantity),
+      gift: this.state.giftOn ? { template:this.state.giftTemplate, to:this.state.giftRecipient, msg:this.state.giftMessage } : null,
+    };
+    if (this.state.giftOn && donateNow) {
+      // gift path handled via giftContinue; here just proceed
+    }
+    this.setState(s => ({ cart: [...s.cart, item] }), () => {
+      if (donateNow) this.go('checkout'); else this.go('cart');
+    });
+  }
+
+  removeFromCart(key) { this.setState(s => ({ cart: s.cart.filter(i => i.key !== key) })); }
+
+  confirmDonation() {
+    const co = this.state.co;
+    const emailOk = /.+@.+\..+/.test(co.email);
+    if (!emailOk) { this.setState(s => ({ co: { ...s.co, emailErr: true } })); return; }
+    const total = this.state.cart.reduce((a, i) => a + i.total, 0);
+    const first = this.state.cart[0];
+    const ref = 'THW-' + Math.floor(100000 + Math.random() * 900000);
+    this.setState({ lastDonation: { total, impact: first ? first.impact : '', ref }, cart: [] });
+    this.go('confirm');
+  }
+
+  setCo(field, v) { this.setState(s => ({ co: { ...s.co, [field]: v, emailErr: field==='email' ? false : s.co.emailErr } })); }
+
+  inputStyle(invalid) {
+    return `width:100%; height:52px; border:1.5px solid ${invalid ? '#C9683A' : 'rgba(45,106,79,.30)'}; background:#FFF8F0; border-radius:13px; padding:0 16px; font-family:'Cairo',sans-serif; font-size:15px; color:#1B3A2B; outline:none;`;
+  }
+  payStyle(active) {
+    return `height:56px; display:flex; align-items:center; justify-content:center; gap:9px; border-radius:14px; cursor:pointer; font-family:'Cairo',sans-serif; font-weight:700; font-size:15px; border:2px solid ${active ? '#E9A23B' : 'rgba(45,106,79,.25)'}; background:${active ? 'rgba(233,162,59,.12)' : '#fff'}; color:${active ? '#1B3A2B' : 'rgba(27,58,43,.7)'};`;
+  }
+
+  renderVals() {
+    this._scheduleApply();
+    const L = this.state.lang, ar = L === 'ar';
+    const t = (a, e) => ar ? a : e;
+    const cur = ar ? 'ج.م' : 'EGP';
+    const all = this.projectsData();
+    const perm = all.filter(p => p.type === 'perm');
+    const season = all.filter(p => p.type === 'season');
+
+    const projView = (p) => ({
+      ...p, slotId: 'thwb-' + p.id, detailSlotId: 'thwb-d-' + p.id,
+      photoSrc: this.illo(p.illo), photoHint: t('أفلت صورة المشروع','Drop project photo'),
+      open: () => this.openProject(p.id),
+    });
+
+    // detail panel
+    const dpProj = this.state.detailId ? this.proj(this.state.detailId) : null;
+    let dp = {};
+    if (dpProj) {
+      const presets = [50, 100, 200, 500, 1000].map(v => {
+        const active = !this.state.customAmount && this.state.amount === v;
+        return {
+          label: this.fmt(v) + ' ' + cur, key: 'a' + v,
+          style: `height:46px; padding:0 18px; border-radius:999px; cursor:pointer; font-family:'Tajawal',sans-serif; font-weight:700; font-size:14.5px; white-space:nowrap; direction:ltr; border:1.5px solid ${active ? '#E9A23B' : 'rgba(45,106,79,.30)'}; background:${active ? '#E9A23B' : '#FFF8F0'}; color:${active ? '#FFF8F0' : '#2D6A4F'};`,
+          pick: () => this.setState({ amount: v, customAmount: '' }),
+        };
+      });
+      dp = {
+        ...projView(dpProj),
+        raised: this.fmt(dpProj.raised) + ' ' + cur, goal: this.fmt(dpProj.goal) + ' ' + cur,
+        presets, customAmount: this.state.customAmount,
+        setCustom: (e) => this.setState({ customAmount: e.target.value.replace(/[^0-9]/g,'') }),
+        quantity: this.state.quantity,
+        inc: () => this.setState(s => ({ quantity: Math.min(99, s.quantity + 1) })),
+        dec: () => this.setState(s => ({ quantity: Math.max(1, s.quantity - 1) })),
+        impactLabel: this.impactPhrase(dpProj, this.state.quantity),
+        totalDisplay: this.fmt(this.lineTotal()) + ' ' + cur,
+        toggleGift: () => this.setState(s => ({ giftOn: !s.giftOn })),
+        giftRowBg: this.state.giftOn ? 'rgba(201,104,58,.08)' : '#fff',
+        giftRowBorder: this.state.giftOn ? '#C9683A' : 'rgba(45,106,79,.2)',
+        giftSwitchBg: this.state.giftOn ? '#C9683A' : 'rgba(45,106,79,.25)',
+        giftKnobPos: this.state.giftOn ? '23px' : '3px',
+        donateNow: () => { if (this.state.giftOn) this.go('gift'); else this.addToCart(true); },
+        addToCart: () => { if (this.state.giftOn) this.go('gift'); else this.addToCart(false); },
+      };
+    }
+
+    // cart
+    const cartView = this.state.cart.map(i => ({
+      ...i, total: this.fmt(i.total) + ' ' + cur,
+      sub: i.impact + (i.gift ? ' · ' + t('هدية','Gift') : ''),
+      remove: () => this.removeFromCart(i.key),
+    }));
+    const cartSum = this.state.cart.reduce((a, i) => a + i.total, 0);
+
+    // gift templates
+    const GT = [
+      { id:'leaf', emoji:'🌿', bg:'linear-gradient(160deg,#3C8266,#2D6A4F)', ink:'#FFF8F0', inkSoft:'rgba(255,248,240,.7)', label:t('ورقة','Leaf') },
+      { id:'water', emoji:'💧', bg:'linear-gradient(160deg,#5FB0CC,#2E7C9A)', ink:'#0E2E3B', inkSoft:'rgba(14,46,59,.6)', label:t('قطرة','Water') },
+      { id:'sun', emoji:'☀️', bg:'linear-gradient(160deg,#F4D35E,#E9A23B)', ink:'#5A3A12', inkSoft:'rgba(90,58,18,.6)', label:t('شمس','Sun') },
+      { id:'heart', emoji:'🤍', bg:'linear-gradient(160deg,#E59A8A,#C9683A)', ink:'#FFF8F0', inkSoft:'rgba(255,248,240,.75)', label:t('قلب','Heart') },
+    ];
+    const gtSel = GT.find(g => g.id === this.state.giftTemplate) || GT[0];
+    const giftTemplates = GT.map(g => ({
+      ...g,
+      style: `display:flex; flex-direction:column; align-items:center; justify-content:center; gap:7px; height:78px; border-radius:14px; cursor:pointer; background:#fff; border:2px solid ${this.state.giftTemplate===g.id ? '#E9A23B' : 'rgba(45,106,79,.18)'};`,
+      pick: () => this.setState({ giftTemplate: g.id }),
+    }));
+
+    // checkout
+    const co = this.state.co;
+    const coView = {
+      firstName: co.firstName, lastName: co.lastName, email: co.email, phone: co.phone,
+      setFirst: e => this.setCo('firstName', e.target.value),
+      setLast: e => this.setCo('lastName', e.target.value),
+      setEmail: e => this.setCo('email', e.target.value),
+      setPhone: e => this.setCo('phone', e.target.value.replace(/[^0-9+ ]/g,'')),
+      firstStyle: this.inputStyle(false), lastStyle: this.inputStyle(false),
+      emailStyle: this.inputStyle(co.emailErr), phoneStyle: this.inputStyle(false),
+      emailError: co.emailErr,
+      pickCard: () => this.setCo('payment', 'card'), pickWallet: () => this.setCo('payment', 'wallet'),
+      cardStyle: this.payStyle(co.payment === 'card'), walletStyle: this.payStyle(co.payment === 'wallet'),
+    };
+
+    const ld = this.state.lastDonation || { total:0, impact:'', ref:'' };
+
+    return {
+      dir: ar ? 'rtl' : 'ltr', langAttr: ar ? 'ar' : 'en', lang: L,
+      backArrowTransform: ar ? 'scaleX(-1)' : 'none',
+      brandName: ar ? 'ثواب' : 'Thawab',
+      isHome: this.state.screen==='home', isDetail: this.state.screen==='detail',
+      isGift: this.state.screen==='gift', isCart: this.state.screen==='cart',
+      isCheckout: this.state.screen==='checkout', isConfirm: this.state.screen==='confirm',
+      goHome: () => this.go('home'), goCart: () => this.go('cart'),
+      goCheckout: () => this.go('checkout'), backToDetail: () => this.go('detail'),
+      confirmDonation: () => this.confirmDonation(),
+      donateTop: () => this.openProject('food'), scrollProjects: () => this.openProject('food'),
+      toggleLang: () => this.setState(s => ({ lang: s.lang==='ar' ? 'en' : 'ar' })),
+      langToggleLabel: ar ? 'EN' : 'ع',
+      lang: L,
+
+      navLinks: [
+        { label: t('الرئيسية','Home'), go: () => this.go('home') },
+        { label: t('مشاريعنا','Projects'), go: () => this.openProject('food') },
+        { label: t('الموسمية','Seasonal'), go: () => this.openProject('ramadan') },
+        { label: t('من نحن','About'), go: () => this.go('home') },
+      ],
+
+      ctaDonate: t('تبرّع الآن','Donate Now'),
+      ctaExplore: t('استكشف مشاريعنا','Explore Our Projects'),
+      ctaDonateThis: t('تبرّع لهذا المشروع','Donate to this'),
+      ctaAddCart: t('أضف إلى السلة','Add to Cart'),
+
+      heroKicker: t('ثواب — منصة الخير','THAWAB — GIVING PLATFORM'),
+      heroTitle: t('ثواب.. أسلوب حياة','Thawab.. A Way of Life'),
+      heroSub: t('صدقتك كالبذرة الواحدة تُنبت سبع سنابل، في كل سنبلة مئة حبّة. تبرّع اليوم وشاهد أثرك يكبر.','Your charity is like a single seed that grows seven ears, each bearing a hundred grains. Give today and watch your impact grow.'),
+      heroImg: this.illo('orphan'), heroPhotoHint: t('أفلت صورة الغلاف','Drop hero photo'),
+      heroBadgeTitle: t('أثرك يتضاعف','Your impact multiplies'),
+      heroBadgeSub: t('حبّة واحدة، سبع سنابل','One seed, seven ears'),
+
+      statsView: [
+        { value: '+' + this.fmt(this.state.statNums[0]), label: t('مستفيد','Beneficiaries') },
+        { value: '+' + this.fmt(this.state.statNums[1]), label: t('مشروع منفّذ','Projects delivered') },
+        { value: this.fmt(this.state.statNums[2]), label: t('محافظات','Governorates') },
+        { value: this.fmt(this.state.statNums[3]) + (ar?' سنة':'+ yrs'), label: t('من العطاء','of giving') },
+      ],
+
+      sectionPermTitle: t('مشاريعنا الدائمة','Our Permanent Projects'),
+      sectionPermSub: t('عطاء مستمر طوال العام لأهلنا في أسوان','Year-round giving for our people in Aswan'),
+      permProjects: perm.map(projView),
+      seeAll: t('عرض الكل','See all'),
+
+      seasonalTag: t('رمضان','Ramadan'),
+      sectionSeasonalTitle: t('مشاريع موسمية','Seasonal Projects'),
+      seasonalProjects: season.map(projView),
+
+      trustText: t('ثواب جمعية خيرية مُرخّصة ومسجّلة رسمياً، خاضعة للرقابة والمراجعة المالية.','Thawab is a licensed, officially registered charitable organization, audited and supervised.'),
+      trustCities: t('نعمل في أسوان و٧ محافظات أخرى','Working in Aswan & 7 other governorates'),
+
+      footerLine: t('ثواب منصة خيرية رقمية تربط المتبرّعين بالأسر الأكثر احتياجاً في صعيد مصر، بشفافية وأثرٍ واضح.','Thawab is a digital giving platform connecting donors with the most in-need families in Upper Egypt, transparently and with clear impact.'),
+      footerContactTitle: t('تواصل معنا','Contact'),
+      footerContact: ar ? 'aswan@thawab.org\n+20 97 234 5678\nأسوان، مصر' : 'aswan@thawab.org\n+20 97 234 5678\nAswan, Egypt',
+      footerPayTitle: t('طرق الدفع','Payment'),
+      payMethods: ['VISA', 'Mastercard', 'Vodafone Cash', 'Fawry', 'InstaPay'],
+      footerCredit: t('© ٢٠٢٦ مؤسسة ثواب الخيرية. جميع الحقوق محفوظة.','© 2026 Thawab Foundation. All rights reserved.'),
+
+      // detail
+      backLabel: t('رجوع','Back'),
+      dp,
+      detailLeafSize: 20,
+      seasonalLeafSize: 13,
+      raisedLabel: t('تم جمعها','raised'),
+      goalPrefix: t('من','of'),
+      chooseAmountLabel: t('اختر مبلغ التبرّع','Choose your amount'),
+      currency: cur,
+      customPlaceholder: t('مبلغ آخر','Custom amount'),
+      impactCaption: t('أثر تبرّعك','Your impact'),
+      totalLabel: t('الإجمالي','Total'),
+      giftToggleLabel: t('اجعلها هدية','Make this a gift'),
+
+      // gift
+      giftTitle: t('أهدِ صدقة','Gift a Donation'),
+      giftSub: t('اختر تصميماً واكتب رسالتك — ستراها تتشكّل أمامك مباشرة.','Pick a design and write your message — watch it form live.'),
+      giftPickLabel: t('اختر التصميم','Choose a design'),
+      giftTemplates,
+      giftNameLabel: t('اسم المُهدى إليه','Recipient name'),
+      giftNamePh: t('مثال: والدتي العزيزة','e.g. My dear mother'),
+      giftMsgLabel: t('رسالتك','Your message'),
+      giftMsgPh: t('اكتب كلمة من القلب…','Write a heartfelt note…'),
+      giftRecipient: this.state.giftRecipient, giftMessage: this.state.giftMessage,
+      setGiftRecipient: e => this.setState({ giftRecipient: e.target.value }),
+      setGiftMessage: e => this.setState({ giftMessage: e.target.value }),
+      giftContinueLabel: t('متابعة التبرّع','Continue donation'),
+      giftContinue: () => this.addToCart(true),
+      giftPreviewLabel: t('معاينة مباشرة','LIVE PREVIEW'),
+      giftCardBg: gtSel.bg, giftCardInk: gtSel.ink, giftCardInkSoft: gtSel.inkSoft,
+      giftPreviewEmoji: gtSel.emoji,
+      giftCardKicker: t('صدقة باسمك','A gift in your name'),
+      giftToLabel: t('إلى','To'),
+      giftRecipientDisplay: this.state.giftRecipient || t('…','…'),
+      giftMessageDisplay: this.state.giftMessage || t('تصلك دعواتي مع هذه الصدقة.','My prayers reach you with this gift.'),
+
+      // cart
+      cartTitle: t('سلة التبرّعات','Donation Cart'),
+      hasCart: this.state.cart.length > 0, cartEmpty: this.state.cart.length === 0,
+      cartCount: this.state.cart.length,
+      cartView,
+      removeLabel: t('إزالة','Remove'),
+      summaryLabel: t('الملخّص','Summary'),
+      subtotalLabel: t('المجموع الفرعي','Subtotal'),
+      cartSubtotal: this.fmt(cartSum) + ' ' + cur,
+      feesLabel: t('رسوم التحويل','Transfer fees'),
+      feesValue: t('مجاناً','Free'),
+      cartTotal: this.fmt(cartSum) + ' ' + cur,
+      checkoutLabel: t('إتمام التبرّع','Checkout'),
+      continueLabel: t('متابعة التصفّح','Continue browsing'),
+      cartEmptyTitle: t('سلّتك فارغة','Your cart is empty'),
+      cartEmptySub: t('ابدأ بزرع بذرة خير من مشاريعنا.','Start by planting a seed of good.'),
+
+      // checkout
+      checkoutTitle: t('إتمام التبرّع','Checkout'),
+      co: coView,
+      firstNameLabel: t('الاسم الأول','First name'),
+      lastNameLabel: t('اسم العائلة','Last name'),
+      emailLabel: t('البريد الإلكتروني','Email'),
+      phoneLabel: t('رقم الهاتف','Phone'),
+      emailErrorMsg: t('يرجى إدخال بريد إلكتروني صحيح','Please enter a valid email'),
+      payMethodLabel: t('طريقة الدفع','Payment method'),
+      payCardLabel: t('بطاقة ائتمان','Credit Card'),
+      payWalletLabel: t('محفظة إلكترونية','E-Wallet'),
+      confirmLabel: t('تأكيد التبرّع','Confirm Donation'),
+      secureNote: t('تبرّعك مؤمَّن ومشفّر بالكامل.','Your donation is fully secure and encrypted.'),
+
+      // confirm
+      confirmHeadline: ld.impact ? t('بُورك فيك — ' + ld.impact + ' في أسوان اليوم', 'Bless you — you ' + ld.impact.toLowerCase() + ' in Aswan today') : t('بُورك فيك على عطائك','Bless you for your gift'),
+      confirmBody: t('وصل تبرّعك بأمان. سيتابع فريقنا الميداني في أسوان تنفيذه، وستصلك رسالة بتفاصيل أثرك خلال أيام.','Your donation arrived safely. Our field team in Aswan will carry it out, and you\u2019ll receive your impact details within days.'),
+      confirmRefLabel: t('رقم العملية','Reference'),
+      confirmRef: ld.ref,
+      confirmAmountLabel: t('المبلغ','Amount'),
+      confirmAmount: this.fmt(ld.total) + ' ' + cur,
+      confirmHomeLabel: t('العودة للرئيسية','Back to home'),
+      confirmShareLabel: t('شارك أثرك','Share impact'),
+      shareImpact: () => this.go('home'),
+    };
+  }
+}
+</script>
+</body>
+</html>
